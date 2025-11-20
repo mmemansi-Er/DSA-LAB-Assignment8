@@ -1,0 +1,58 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class PQueue {
+    vector<int> h;
+
+    void up(int i){
+        while(i>0 && h[(i-1)/2]<h[i]){
+            swap(h[i],h[(i-1)/2]);
+            i=(i-1)/2;
+        }
+    }
+
+    void down(int i){
+        int n=h.size();
+        int l=2*i+1, r=2*i+2, largest=i;
+        if(l<n && h[l]>h[largest]) largest=l;
+        if(r<n && h[r]>h[largest]) largest=r;
+        if(largest!=i){
+            swap(h[i],h[largest]);
+            down(largest);
+        }
+    }
+
+public:
+    void push(int x){
+        h.push_back(x);
+        up(h.size()-1);
+    }
+
+    void pop(){
+        if(h.empty()) return;
+        h[0]=h.back();
+        h.pop_back();
+        down(0);
+    }
+
+    int top(){
+        return h.empty()? -1 : h[0];
+    }
+
+    bool empty(){
+        return h.empty();
+    }
+};
+
+int main(){
+    PQueue pq;
+    pq.push(10);
+    pq.push(30);
+    pq.push(20);
+    pq.push(5);
+    while(!pq.empty()){
+        cout<<pq.top()<<" ";
+        pq.pop();
+    }
+}
