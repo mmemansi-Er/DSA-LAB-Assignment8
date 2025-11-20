@@ -1,0 +1,32 @@
+#include <iostream>
+using namespace std;
+
+class Node {
+public:
+    int d;
+    Node *l,*r;
+    Node(int x){ d=x; l=r=NULL; }
+};
+
+class Tree {
+    bool check(Node* r,int min,int max){
+        if(r==NULL) return true;
+        if(r->d<=min || r->d>=max) return false;
+        return check(r->l,min,r->d) && check(r->r,r->d,max);
+    }
+public:
+    bool isBST(Node* r){
+        return check(r,INT_MIN,INT_MAX);
+    }
+};
+
+int main(){
+    Node* root=new Node(10);
+    root->l=new Node(5);
+    root->r=new Node(15);
+    root->r->l=new Node(6);
+    root->r->r=new Node(20);
+
+    Tree t;
+    cout<<(t.isBST(root)?"BST":"Not BST")<<endl;
+}
