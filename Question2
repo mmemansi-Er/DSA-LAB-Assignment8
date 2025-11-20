@@ -1,0 +1,92 @@
+#include <iostream>
+using namespace std;
+
+class Node {
+public:
+    int d;
+    Node *l,*r;
+    Node(int x){ d=x; l=r=NULL; }
+};
+
+class BST {
+public:
+    Node* insert(Node* r,int x){
+        if(r==NULL) return new Node(x);
+        if(x<r->d) r->l=insert(r->l,x);
+        else if(x>r->d) r->r=insert(r->r,x);
+        return r;
+    }
+
+    Node* search(Node* r,int x){
+        if(r==NULL || r->d==x) return r;
+        if(x<r->d) return search(r->l,x);
+        else return search(r->r,x);
+    }
+
+    Node* searchNR(Node* r,int x){
+        while(r){
+            if(r->d==x) return r;
+            if(x<r->d) r=r->l;
+            else r=r->r;
+        }
+        return NULL;
+    }
+
+    Node* minNode(Node* r){
+        while(r && r->l) r=r->l;
+        return r;
+    }
+
+    Node* maxNode(Node* r){
+        while(r && r->r) r=r->r;
+        return r;
+    }
+
+    Node* inorderSuccessor(Node* r,int x){
+        Node* cur=search(r,x);
+        if(cur->r) return minNode(cur->r);
+        Node* succ=NULL;
+        while(r){
+            if(x<r->d){ succ=r; r=r->l; }
+            else if(x>r->d) r=r->r;
+            else break;
+        }
+        return succ;
+    }
+
+    Node* inorderPredecessor(Node* r,int x){
+        Node* cur=search(r,x);
+        if(cur->l) return maxNode(cur->l);
+        Node* pred=NULL;
+        while(r){
+            if(x>r->d){ pred=r; r=r->r; }
+            else if(x<r->d) r=r->l;
+            else break;
+        }
+        return pred;
+    }
+};
+
+int main(){
+    BST t;
+    Node* r=NULL;
+    r=t.insert(r,50);
+    t.insert(r,30);
+    t.insert(r,70);
+    t.insert(r,20);
+    t.insert(r,40);
+    t.insert(r,60);
+    t.insert(r,80);
+
+    cout<<"Min: "<<t.minNode(r)->d<<endl;
+    cout<<"Max: "<<t.maxNode(r)->d<<endl;
+
+    Node* s=t.search(r,40);
+    cout<<"Search 40: "<<(s?"Found":"Not Found")<<endl;
+
+    Node* suc=t.inorderSuccessor(r,50);
+    Node* pre=t.inorderPredecessor(r,50);
+
+    cout<<"Successor of 50: "<<(suc?suc->d:-1)<<endl;
+    cout<<"Predecessor of 50: "<<(pre?pre->d:-1)<<endl;
+}
